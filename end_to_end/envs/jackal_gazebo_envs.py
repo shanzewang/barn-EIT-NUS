@@ -212,8 +212,6 @@ class JackalGazeboLaser(JackalGazebo):
         # laser_scan[laser_scan > 3.0] = 3.0
         return laser_scan
 
-
-################shanze
     def _get_observation(self, pos, psi, action):
         # observation is the 720 dim laser scan + one local goal in angle
         laser_scan = self._get_laser_scan()
@@ -224,15 +222,11 @@ class JackalGazeboLaser(JackalGazebo):
         # min pooling along the second axis
         pooled_scan = np.min(reshaped_scan, axis=1) - 0.09
         
-        # 对pooling后的结果取倒数，同时处理零值问题
         reciprocal_laser_scan = 1.0 / np.where(pooled_scan <= 0, 5e-3 , pooled_scan) 
-        
-        # clip the reciprocal scans
-        # reciprocal_laser_scan[reciprocal_laser_scan > self.laser_clip] = self.laser_clip
 
         laser_scan = reciprocal_laser_scan
 
-        # # normalize
+        # normalize
         laser_scan = (laser_scan - self.laser_clip/2) / self.laser_clip * 2 # scale to (-1, 1)
         
         goal_pos = self.transform_goal(self.world_frame_goal, pos, psi) / 5.0 - 1  # roughly (-1, 1) range
