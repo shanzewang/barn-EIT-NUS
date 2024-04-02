@@ -1,0 +1,77 @@
+env_config:
+  collector: "container"
+  env_id: "motion_control_continuous_laser-v0"
+  seed: 14
+  stack_frame: 1   # span 1, 4, 8
+  kwargs:
+    world_name: "world_0.world"
+    gui: false
+    verbose: false
+    max_step: 400
+    time_step: 0.2
+    slack_reward: 0
+    collision_reward: -10
+    failure_reward: 0
+    success_reward: 10
+    goal_reward: 2 # from 1 to 2
+    max_collision: 1
+    init_position: [-2, 3, 1.57]
+    goal_position: [0, 10, 0]
+
+    laser_clip: 5
+    min_v: -1
+    max_v: 2
+    min_w: -3.14
+    max_w: 3.14
+
+training_config:
+  algorithm: "SAC"
+  encoder: "mlp"  # span "mlp", "cnn", "rnn", "transformer"
+  buffer_size: 200000
+  actor_lr: 0.0001
+  critic_lr: 0.0001
+  # For head
+  num_layers: 1
+  hidden_layer_size: 128
+  # For encoder
+  encoder_num_layers: 4
+  encoder_hidden_layer_size: 128
+  pre_collect: 4096
+  log_intervals: 2
+
+  validation: False
+  val_interval: 1000000
+
+  dyna_style: False
+  n_simulated_update: 10
+  model_lr: 0.0001
+
+  MPC: False
+  horizon: 10
+  num_particle: 256
+
+  safe_rl: False # for safe RL
+  safe_mode: "lagr" # for safe RL
+  safe_lagr: 2. # for safe RL
+
+  policy_args:
+    tau: 0.05
+    gamma: 0.99
+    alpha: 0.01
+    automatic_entropy_tuning: True
+    n_step: 4
+
+  training_args:
+    max_step: 400000
+    collect_per_step: 4096
+    update_per_step: 1024
+    batch_size: 128
+
+container_config:
+  # 5 container running in parallel
+  num_actor: 5
+  # 150 training static worlds
+  worlds: [250, 211, 296, 88, 247, 273, 20, 157, 253, 47, 182, 54, 279, 225, 13, 169, 206, 160, 274, 11, 94, 204, 214, 6, 262, 100, 29, 280, 271, 191, 82, 40, 175, 140, 116, 266, 208, 106, 114, 129, 50, 80, 113, 115, 195, 226, 228, 51, 168, 164, 217, 166, 269, 95, 254, 205, 48, 21, 105, 165, 18, 194, 66, 186, 98, 241, 44, 70, 14, 200, 159, 76, 244, 102, 156, 270, 136, 154, 177, 216, 242, 213, 193, 281, 107, 235]
+  # 50 test static worlds
+  test_worlds: [97, 24, 87, 74, 61, 69, 49, 53, 26, 104, 34, 60, 79, 17, 38, 101, 5, 73, 91, 43, 16, 22, 99, 56, 85, 1, 9, 59, 72, 4, 89, 42, 23, 96, 64, 52, 75, 27, 84, 12, 55, 8, 33, 71, 37, 2, 62, 46, 25, 19]
+  # test_worlds: [249, 292, 97, 162, 219, 125, 142, 289, 1, 106, 227, 79, 132, 31, 151, 220, 91, 228, 160, 145, 224, 152, 10, 252, 69, 174, 244, 208, 158, 214, 211, 37, 120, 271, 99, 21, 4, 5, 2, 32, 14, 96, 139, 212, 245, 84, 156, 128, 58, 48]
