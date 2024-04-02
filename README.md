@@ -4,7 +4,7 @@
 
 --------------------------------------------------------------------------------
 
-# ICRA 2022 BARN Challenge
+# ICRA 2024 BARN Challenge
 
 ## Requirements
 If you run it on a local machine without containers:
@@ -43,7 +43,7 @@ cd /<YOUR_HOME_DIR>/jackal_ws/src
 
 4. Clone this repo and required ros packages
 ```
-git clone https://github.com/Daffan/nav-competition-icra2022.git
+git clone https://github.com/shanzewang/barn-EIAS-NUS.git
 git clone https://github.com/jackal/jackal.git
 git clone https://github.com/jackal/jackal_simulator.git
 git clone https://github.com/jackal/jackal_desktop.git
