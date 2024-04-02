@@ -70,8 +70,8 @@ Follow the instruction below to run simulations in Singularity containers.
 
 2. Clone this repo
 ```
-git clone https://github.com/Daffan/nav-competition-icra2022.git
-cd nav-competition-icra2022
+git clone https://github.com/shanzewang/barn-EIAS-NUS.git
+cd barn-EIAS-NUS
 ```
 
 3. Build Singularity image (sudo access required)
