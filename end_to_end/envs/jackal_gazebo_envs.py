@@ -64,12 +64,13 @@ class JackalGazebo(gym.Env):
         rospy.set_param('/use_sim_time', True)
             
         self.gazebo_sim = GazeboSimulation(init_position=self.init_position)
+
         # launch gazebo
         if init_sim:
             rospy.logwarn(">>>>>>>>>>>>>>>>>> Load world: %s <<<<<<<<<<<<<<<<<<" %(world_name))
             rospack = rospkg.RosPack()
             self.BASE_PATH = rospack.get_path('jackal_helper')
-            world_name = join(self.BASE_PATH, "worlds", world_name)
+            world_name = join(self.BASE_PATH, "worlds/BARN", world_name)
             launch_file = join(self.BASE_PATH, 'launch', 'gazebo_launch.launch')
 
             self.gazebo_process = subprocess.Popen(['roslaunch', 
@@ -112,6 +113,9 @@ class JackalGazebo(gym.Env):
         # compute observation
         obs = self._get_observation(pos, psi, action)
         
+        #转换成float32？
+        obs = obs.astype(np.float32)
+        # print(obs)
         # compute termination
         flip = pos.z > 0.1  # robot flip
         
@@ -207,7 +211,7 @@ class JackalGazeboLaser(JackalGazebo):
         # laser_scan[laser_scan > self.laser_clip] = self.laser_clip
         return laser_scan
 
-################################################## JIDAN
+
     def _get_observation(self, pos, psi, action):
         # observation is the 720 dim laser scan + one local goal in angle
         laser_scan = self._get_laser_scan()
@@ -233,52 +237,10 @@ class JackalGazeboLaser(JackalGazebo):
         rela_angle = np.arctan2(goal_pos[0],goal_pos[1])
         rela_dis = np.sqrt(goal_pos[0]**2+goal_pos[1]**2)
         
-#        bias = (self.action_space.high + self.action_space.low) / 2.
-#        scale = (self.action_space.high - self.action_space.low) / 2.
-#        action = (action - bias) / scale
-        
         obs = [laser_scan, [rela_angle,rela_dis], action]
         
         obs = np.concatenate(obs)
         return obs
-    
-    # def _get_laser_scan(self):
-    #     """Get 720 dim laser scan
-    #     Returns:
-    #         np.ndarray: (720,) array of laser scan 
-    #     """
-    #     laser_scan = self.gazebo_sim.get_laser_scan()
-    #     laser_scan = np.array(laser_scan.ranges)
-        
-    #     return laser_scan
-    
-    # def _get_observation(self, pos, psi, action):
-    #     # observation is the 720 dim laser scan + one local goal in angle
-    #     laser_scan = self._get_laser_scan()
-        
-    #     # 将laser_scan重塑为(20, 36)的二维数组
-    #     reshaped_scan = laser_scan.reshape(20, -1)
-                
-    #     # 沿第二个轴(axis=1)进行min pooling
-    #     pooled_scan = np.min(reshaped_scan, axis=1)
-        
-    #     # 对pooling后的结果取倒数，同时处理零值问题
-    #     reciprocal_laser_scan = 1.0 / np.where(pooled_scan == 0, np.inf, pooled_scan)
-        
-    #     # laser_scan = (laser_scan - self.laser_clip/2.) / self.laser_clip * 2 # scale to (-1, 1)
-        
-    #     goal_pos = self.transform_goal(self.world_frame_goal, pos, psi) / 5.0 - 1  # roughly (-1, 1) range
-        
-    #     bias = (self.action_space.high + self.action_space.low) / 2.
-    #     scale = (self.action_space.high - self.action_space.low) / 2.
-    #     action = (action - bias) / scale
-        
-    #     obs = [reciprocal_laser_scan, goal_pos, action]
-        
-    #     obs = np.concatenate(obs)
-
-    #     return obs
-
 
     def transform_goal(self, goal_pos, pos, psi):
         """ transform goal in the robot frame
