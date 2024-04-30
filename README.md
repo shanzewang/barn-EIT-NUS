@@ -43,7 +43,7 @@ cd /<YOUR_HOME_DIR>/jackal_ws/src
 
 4. Clone this repo and required ros packages
 ```
-git clone https://github.com/shanzewang/barn-EIAS-NUS.git
+git clone https://github.com/shanzewang/barn-EIT-NUS.git
 git clone https://github.com/jackal/jackal.git
 git clone https://github.com/jackal/jackal_simulator.git
 git clone https://github.com/jackal/jackal_desktop.git
