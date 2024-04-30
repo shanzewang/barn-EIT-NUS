@@ -222,7 +222,7 @@ class JackalGazeboLaser(JackalGazebo):
         # min pooling along the second axis
         pooled_scan = np.min(reshaped_scan, axis=1) - 0.12
         
-        # 对pooling后的结果取倒数，同时处理零值问题
+        # Take the reciprocal of the result after pooling and deal with the zero value problem at the same time
         reciprocal_laser_scan = 1.0 / np.where(pooled_scan <= 0, 5e-3 , pooled_scan) 
         
         # clip the reciprocal scans
